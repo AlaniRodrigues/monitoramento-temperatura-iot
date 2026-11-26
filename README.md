@@ -1,52 +1,97 @@
-# 🌡️ Monitoramento de Temperatura IoT
+# 🧊 Smart Cooler IoT
 
-## 📌 Sobre o projeto
+## Monitoramento de Refrigeração de Bebidas em Supermercados
 
-Sistema de monitoramento de temperatura e umidade desenvolvido como atividade acadêmica, utilizando um ESP32 simulado no Wokwi, sensor DHT22, comunicação MQTT, API REST e um painel web.
+### 📌 Sobre o projeto
 
-O sistema permite acompanhar as leituras em tempo real, visualizar o histórico de temperaturas e identificar situações de alerta.
+O Smart Cooler IoT é um sistema de monitoramento de temperatura de geladeiras de bebidas em supermercados, desenvolvido utilizando tecnologias de Internet das Coisas (IoT).
 
-## 🛠️ Tecnologias utilizadas
+O objetivo é acompanhar as condições de refrigeração em tempo real, identificar temperaturas inadequadas e auxiliar na prevenção de desperdícios.
 
-- **Wokwi:** simulação do ESP32 e sensor DHT22.
-- **MicroPython:** programação do ESP32.
-- **EMQX Serverless:** comunicação MQTT.
-- **Supabase:** API REST e banco de dados PostgreSQL.
-- **Cloudflare Pages:** hospedagem do painel web.
-- **HTML, CSS e JavaScript:** desenvolvimento do frontend.
+### 🎓 Informações acadêmicas
 
-## 🏗️ Arquitetura
+- **Instituição:** Universidade de Marília – UNIMAR
+- **Curso:** Análise e Desenvolvimento de Sistemas
+- **Atividade:** Projeto Integrador de Monitoramento IoT – 2026/2
+- **Grupo:** 06
 
-ESP32 + DHT22 (Wokwi) → MQTT/TLS → EMQX → HTTPS → Supabase → Cloudflare Pages
+### 👥 Integrantes
 
-O ESP32 realiza leituras periódicas e publica os dados via MQTT. O EMQX encaminha as informações para uma função de API no Supabase, que armazena os registros no banco de dados. O painel web consulta esses dados e apresenta os resultados.
+- Alani da Silva Rodrigues
+- Giovanna Gonçalves Batista
+- Marcelo Henrique de Amorim
 
-## ⚙️ Funcionalidades
+### 🥤 Equipamentos monitorados
 
-- Monitoramento de temperatura e umidade.
-- Envio automático de leituras a cada 10 segundos.
-- Armazenamento do histórico no Supabase.
-- Gráfico das últimas 30 leituras.
-- Alerta para temperaturas a partir de 30 °C.
-- Identificação de dados desatualizados após 30 segundos sem novas leituras.
-- Atualização automática quando a transmissão é retomada.
+O sistema utiliza cinco sensores DHT22 conectados a um único ESP32.
 
-## 🧪 Testes realizados
+| Geladeira | Identificação | GPIO |
+|---|---|---|
+| Cervejas | cerveja-01 | 4 |
+| Guaranás | guarana-01 | 5 |
+| Sucos | suco-01 | 18 |
+| Energéticos | energetico-01 | 19 |
+| Águas | agua-01 | 21 |
 
-- Envio de dados do Wokwi ao Supabase.
-- Exibição das leituras no painel web.
-- Alteração da temperatura simulada para 35 °C e ativação do alerta.
-- Interrupção da simulação e identificação de dados desatualizados.
-- Retomada da simulação e atualização automática do painel.
+### 🛠️ Tecnologias utilizadas
 
-## 🌐 Painel web
+- ESP32
+- Sensores DHT22
+- Wokwi
+- MicroPython
+- MQTT
+- EMQX Serverless
+- Supabase Edge Functions
+- PostgreSQL
+- API REST
+- HTML
+- CSS
+- JavaScript
+- Cloudflare Pages
 
-https://monitoramento-temperatura-iot.pages.dev
+### 🔄 Arquitetura do sistema
 
-## 🔐 Segurança
+DHT22 → ESP32 → MQTT → EMQX → API REST → Supabase → Painel Web
 
-O projeto utiliza comunicação MQTT com TLS e autenticação para envio de dados. Senhas e chaves privadas não devem ser publicadas no repositório.
+1. Os cinco sensores coletam as temperaturas das geladeiras.
+2. O ESP32 processa as leituras e envia mensagens JSON utilizando MQTT.
+3. O broker EMQX recebe as mensagens e encaminha os dados via HTTPS.
+4. A Edge Function ingest recebe, valida e armazena as informações no Supabase.
+5. O painel hospedado no Cloudflare Pages consulta os registros e apresenta as informações individualmente.
 
-## 📚 Contexto acadêmico
+### 📊 Funcionalidades
 
-Projeto desenvolvido para demonstrar a integração entre sensores simulados, comunicação em rede, API REST, armazenamento de dados e interface web.
+- Monitoramento de cinco geladeiras simultaneamente.
+- Atualização automática das informações.
+- Temperatura atual de cada equipamento.
+- Alertas de temperatura inadequada.
+- Identificação de temperaturas críticas.
+- Gráficos individuais de temperatura.
+- Histórico de leituras.
+- Identificação de dados desatualizados.
+- Retomada automática da visualização após o recebimento de novas leituras.
+- Armazenamento independente do painel web.
+- Interface interativa com seleção individual das geladeiras.
+
+### ⏱️ Intervalo de coleta
+
+As leituras são enviadas aproximadamente a cada 10 segundos, mesmo quando a temperatura permanece igual.
+
+Um intervalo menor permite identificar alterações mais rapidamente, mas aumenta o tráfego de rede e o volume de registros armazenados.
+
+### 🗄️ Banco de dados
+
+As informações são armazenadas na tabela leituras do Supabase.
+
+Cada registro possui um identificador, data e hora, temperatura e identificação da geladeira.
+
+A coluna de umidade permanece na estrutura por compatibilidade técnica, mas não é utilizada como indicador no painel.
+
+### 🧪 Testes funcionais
+
+Os cenários de validação do projeto incluem:
+
+- Fluxo completo dos sensores até o painel web.
+- Monitoramento de temperaturas normais.
+- Identificação de temperaturas inadequadas.
+- Inter
